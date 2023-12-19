@@ -1,0 +1,73 @@
+<ion-grid>
+    <ion-row>
+        <ion-col size-sm="0" size-lg="3"></ion-col>
+        <ion-col size-sm="12" size-lg="6">
+            <div class="container">
+                <ion-card class="centered-div">
+                    <h1>Sign up, let's get Geeky!</h1>
+                    <ion-list>
+                        <ion-item>
+                            <ion-input  type="text"
+                                        name="geek_name_field"
+                                        label="Name" 
+                                        labelPlacement="stacked" 
+                                        placeholder="Enter name" 
+                                        [(ngModel)]="userRegReq.firstName">
+                            </ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input  type="text"
+                                        label="Surname"
+                                        name="geek_surname_field"
+                                        labelPlacement="stacked"
+                                        placeholder="Enter surname"
+                                        [(ngModel)]="userRegReq.lastName">
+                            </ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input  label="handle"
+                                        labelPlacement="stacked"
+                                        placeholder="Enter a cool handle" 
+                                        [(ngModel)]="userRegReq.handle">
+                            </ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input  type="email"
+                                        name="geek_email_field"
+                                        label="email" 
+                                        labelPlacement="stacked"
+                                        placeholder="Enter email"
+                                        [(ngModel)]="userRegReq.email">
+                            </ion-input>
+                        </ion-item>
+                        <ion-item>
+                            <ion-input  type="password"
+                                        name="geek_password_field"
+                                        label="password" 
+                                        labelPlacement="stacked"
+                                        placeholder="Enter password"            
+                                        [(ngModel)]="userRegReq.password">
+                            </ion-input>
+                        </ion-item>
+                    </ion-list>
+                    <ion-grid>
+                        <ion-row>
+                            <ion-col class="ion-text-center">
+                                <ion-button (click)="register()" size="small">register</ion-button>
+                                <ion-buttons>
+                                    <ion-button (click)="navigateToLogin()" >login</ion-button>
+                                </ion-buttons>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+                </ion-card>
+            </div>
+        </ion-col>
+        <ion-col size-sm="0" size-lg="3"></ion-col>
+    </ion-row>
+</ion-grid>
+
+
+
+
+
