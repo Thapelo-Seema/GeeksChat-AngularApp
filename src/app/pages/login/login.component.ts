@@ -29,13 +29,16 @@ export class LoginComponent implements OnInit {
   login(){
     this.authService.login(this.email, this.password)
     .pipe(take(1))
-    .subscribe(LoginResponse =>{
-      this.chatUser = LoginResponse;
-      console.log(LoginResponse);
-      this.eventService.emitLoginEvent(this.chatUser)
-      //this.router.navigate(['/contacts']);
+    .subscribe(loginResponse =>{
+      if(loginResponse.status == "SUCCESS"){
+         this.chatUser = loginResponse.data  || new ChatUser();
+         this.eventService.emitLoginEvent(this.chatUser)
+      this.router.navigate(['/contacts', this.chatUser.id]);
+      }else{
+        console.log(loginResponse)
+        alert(loginResponse.message)
+      }
     })
-    
   }
 
   register(){

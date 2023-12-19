@@ -28,6 +28,7 @@ export class RegisterComponent {
     this.authService.register(this.userRegReq)
     .pipe(take(1)).subscribe(u =>{
       console.log(u)
+      this.navigateToLogin();
     })
   }
 }
