@@ -30,7 +30,7 @@ export class ContactsComponent implements OnInit{
   }
 
   gotoContact(id: number): void{
-    this.router.navigate(['/chat', {contactId: id}]);
+    this.router.navigate(['/chat', id]);
   }
 
 }

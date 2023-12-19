@@ -35,8 +35,8 @@ export class ChatComponent implements OnInit{
     let tempMessage = new ChatMessage();
     this.message.topic = "/app/private-message"; 
     tempMessage.txtContent = this.message.txtContent;
-    tempMessage.sender = this.message.sender;
-    tempMessage.receiver = this.message.receiver;
+    tempMessage.sender = this.currentUser.id;
+    tempMessage.receiver = this.contact.id;
     tempMessage.topic = this.message.topic;
     this.messages.push(tempMessage);
     this.webSocketSvc.sendMessage(tempMessage);

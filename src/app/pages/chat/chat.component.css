@@ -1,0 +1,15 @@
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .scrollable-messages-div {
+    flex: 0 0 85%;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+  }
+
+  .typing-div {
+    flex: 0 0 15%;
+  }
