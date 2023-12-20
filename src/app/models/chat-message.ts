@@ -1,3 +1,4 @@
+import { getLocaleDateTimeFormat } from "@angular/common";
 import { IonDatetime } from "@ionic/angular";
 
 export class ChatMessage{
@@ -6,14 +7,14 @@ export class ChatMessage{
     receiver: number = 0;
     txtContent: string = "";
     topic: string = "";
-    createdAt: number = 0;
+    createdAt: Date = new Date();
     //Using the builder pattern to easily create chat messages
-    constructor(sender?: number, receiver?: number, message?: string, topic?: string, createdAt?: number, id?:number){
+    constructor(sender?: number, receiver?: number, message?: string, topic?: string, createdAt?: Date, id?:number){
         this.sender = sender || 0;
         this.receiver = receiver || 0;
         this.txtContent = message || "";
         this.topic = topic || "";
-        this.createdAt = createdAt || 0;
+        this.createdAt = createdAt || new Date();
         this.id = id || 0;
     }
 }

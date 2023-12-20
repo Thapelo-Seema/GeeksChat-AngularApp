@@ -1,13 +1,18 @@
-<ion-grid>
-    <ion-row>
+<ion-grid style="height: 100%;">
+    <ion-row style="height: 100%;">
         <ion-col size-sm="0" size-lg="2"></ion-col>
-        <ion-col size-sm="12" size-lg="8">
-            <div class="container">
+        <ion-col size-sm="12" size-lg="8" style="height: 100%;">
+            <div>
+                <ion-item>
+                    <ion-button (click)="toggleShowChats()">toggle</ion-button>
+                </ion-item>
+            </div>
+            <div class="contacts-container" *ngIf="showChats == false">
                 <ion-card class="centered-div">
                     <h1>GeeksChat</h1>
                     <ion-list>
                         <li *ngFor="let contact of contacts" >
-                            <ion-card *ngIf="contact.id != currentUser.id">
+                            <ion-card>
                                 <ion-item (click)="gotoContact(contact.id)">
                                     <ion-avatar aria-hidden="true" slot="start">
                                         <img alt="" src="https://ionicframework.com/docs/img/demos/avatar.svg" />
@@ -16,9 +21,35 @@
                                 </ion-item>
                             </ion-card>
                         </li>
-                    </ion-list>
+                    </ion-list>     
                 </ion-card>
             </div>
+
+
+            <div class="chat-container" *ngIf="showChats == true">
+                <div class="scrollable-messages-div">
+                  <ion-list>
+                    <ion-item *ngFor="let message_item of messages">
+                      <h2>{{message_item.sender}}</h2>
+                      <p>{{message_item.txtContent}}</p>
+                    </ion-item>
+                  </ion-list>
+                </div>
+                <div class="typing-div">
+                  <ion-content>
+                    <ion-row>
+                        <ion-col size="10">
+                            <ion-item>
+                                <ion-textarea [(ngModel)]="message.txtContent"></ion-textarea>
+                            </ion-item>
+                        </ion-col>
+                        <ion-col size="2">
+                            <ion-button expand="full" (click)="handleSendMessage()">Send</ion-button>
+                        </ion-col>
+                    </ion-row>
+                  </ion-content>
+                </div>
+              </div>
         </ion-col>
         <ion-col size-sm="0" size-lg="2"></ion-col>
     </ion-row>

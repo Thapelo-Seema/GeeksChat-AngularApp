@@ -21,8 +21,14 @@ export class AppComponent implements OnInit{
 
   }
 
+  //Todo: clean up and find a way to resubscribe once subscription is lost
   ngOnInit(): void {
     this.webSocketSvc.stompClient.activate();
+    this.eventService.reSubscribeEvent.subscribe(userId =>{
+      console.log("re-subscribe to: ", userId)
+      //this.webSocketSvc.stompClient.activate();
+      //.subscribeToPrivateMessages(userId);
+    })
     this.eventService.loginEvent.subscribe((user) =>{
       this.currentUser = user;
       //run logic for listening to login service and subscribe to users web socket topics
@@ -33,8 +39,9 @@ export class AppComponent implements OnInit{
   }
 
   handleNewMessageEvents(message: Message){
-    console.log(message); 
-    
+    console.log(JSON.parse(message.body)); 
+    const msg: ChatMessage = JSON.parse(message.body)
+    this.eventService.emitMessageReceivedEvent(msg);
   }
 
   subscribeToPrivateMessages(userId: number){

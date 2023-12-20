@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatMessage } from '../../models/chat-message';
 import { WebsocketService } from '../../services/websocket.service';
-import { Message } from '@stomp/stompjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs';
 import { ChatUser } from 'src/app/models/chat-user';
+import { EventService } from '../../services/event.service';
 
 @Component({
   selector: 'app-chat',
@@ -18,7 +18,7 @@ export class ChatComponent implements OnInit{
   currentUser: ChatUser;
   contact: ChatUser;
 
-  constructor(private webSocketSvc: WebsocketService, private activatedRoute: ActivatedRoute){
+  constructor(private webSocketSvc: WebsocketService, private activatedRoute: ActivatedRoute, private eventService: EventService){
     this.currentUser = new ChatUser();
     this.contact = new ChatUser();
   }
@@ -26,7 +26,8 @@ export class ChatComponent implements OnInit{
   ngOnInit(): void {
     this.activatedRoute.params.pipe(take(1))
     .subscribe(params =>{
-      this.contact.id = params["id"];
+      this.currentUser.id = params["userId"];
+      this.contact.id = params["contactId"];
     })
   }
 
@@ -40,7 +41,7 @@ export class ChatComponent implements OnInit{
     tempMessage.topic = this.message.topic;
     this.messages.push(tempMessage);
     this.webSocketSvc.sendMessage(tempMessage);
-    this.message.txtContent = "";
+    //this.message.txtContent = "";
   }
 
   registerUser(){
