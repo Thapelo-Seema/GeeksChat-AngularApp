@@ -10,10 +10,11 @@ import { environment } from 'src/environments/environment';
 export class WebsocketService {
 
   stompClient: Client;
+  webSocket: WebSocket;
  
   constructor() { 
-    const webSocket = new WebSocket(environment.websocketURL)
-    this.stompClient = Stomp.over(webSocket);
+    this.webSocket =  new WebSocket(environment.websocketURL)
+    this.stompClient = Stomp.over(this.webSocket);
   }
 
   public sendMessage(message: ChatMessage){

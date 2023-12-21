@@ -6,6 +6,7 @@ import { take } from 'rxjs';
 import { EventService } from '../../services/event.service';
 import { ChatMessage } from 'src/app/models/chat-message';
 import { WebsocketService } from '../../services/websocket.service';
+import { SelectedMessageData } from 'src/app/models/selected-message-data';
 
 //Todo: Send data to chat component via events and factor functionality there
 
@@ -32,30 +33,44 @@ export class ContactsComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    const navigation = this.router.getCurrentNavigation();
-    this.activatedRoute.params.pipe(take(1)).subscribe(params =>{
-      console.log("User passed in params: ", params);
-      this.currentUser.id = params['id'];
-      this.eventService.emitResubscribeEvent(this.currentUser.id);
-      this.userService.getChatUsers(this.currentUser.id).subscribe(users =>{
-        this.contacts = users.filter(u => u.id != this.currentUser.id);
-      
-        users.forEach(u =>{
-          if(u.id != this.currentUser.id) this.contactsMap.set(u.id, u);
-        })
-        //initialize contact messages map
-        this.contacts.forEach(u =>{
-          this.contactsMessagesMap.set(u.id, []);
-        })
-
-        this.eventService.messageEvent.subscribe(msg =>{
-         let contactChatMessageList: ChatMessage[] = this.contactsMessagesMap.get(msg.sender) || [];
-         contactChatMessageList.push(msg);
-         this.contactsMessagesMap.set(msg.id, contactChatMessageList);
-        })
-       
-      })
+    this.initializeCurrentUser();
+    this.userService.getChatUsers(this.currentUser.id).subscribe(users =>{
+      this.contacts = users.filter(u => u.id != this.currentUser.id);
+      this.initializeContactsMap();
+      this.initializeContactMessagesMap();
+      this.onNewMessageHandler();
     })
+  }
+
+
+  initializeCurrentUser():void{
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(data =>{
+      this.currentUser.id = parseInt(data["id"]);
+      this.currentUser.firstName = data["firstName"];
+      this.currentUser.lastName = data["lastName"];
+      this.currentUser.email = data["email"];
+      this.currentUser.handle = data["handle"];
+    })
+  }
+
+  initializeContactMessagesMap():void{
+    this.contacts.forEach(u =>{
+      this.contactsMessagesMap.set(u.id, []);
+    })
+  }
+
+  initializeContactsMap():void{
+    this.contacts.forEach(u =>{
+      this.contactsMap.set(u.id, u);
+    })
+  }
+
+  onNewMessageHandler(){
+    this.eventService.messageEvent.subscribe(msg =>{
+      let contactChatMessageList: ChatMessage[] = this.contactsMessagesMap.get(msg.sender) || [];
+      contactChatMessageList.push(msg);
+      this.contactsMessagesMap.set(msg.id, contactChatMessageList);
+     })
   }
 
   handleSendMessage(){
@@ -68,15 +83,19 @@ export class ContactsComponent implements OnInit{
     tempMessage.topic = this.message.topic;
     this.messages.push(tempMessage);
     this.webSocketSvc.sendMessage(tempMessage);
-    //this.message.txtContent = "";
+    this.message.txtContent = "";
   }
 
   gotoContact(contactId: number): void{
-    //this.router.navigate(['/chat', this.currentUser.id, contactId]);
-    this.contact.id = contactId;
+    let selectedContact = this.contactsMap.get(contactId);
+    console.log("Current User: ", this.currentUser);
+    console.log("Selected Contact: ", selectedContact);
     this.messages = this.contactsMessagesMap.get(contactId) || [];
-    this.showChats = true;
+    let selectedContactData: SelectedMessageData = new 
+      SelectedMessageData(this.currentUser.id, this.currentUser.firstName, selectedContact?.id, selectedContact?.firstName,this.messages)
+    this.router.navigate(['/chat', this.currentUser.id, contactId], {queryParams: selectedContactData});
   }
+
 
   toggleShowChats(){
     this.showChats = !this.showChats;

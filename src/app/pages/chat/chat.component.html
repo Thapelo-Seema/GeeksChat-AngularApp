@@ -13,16 +13,17 @@
           </div>
           <div class="typing-div">
             <ion-content>
-              <ion-item>
-                <ion-textarea [(ngModel)]="message.txtContent"></ion-textarea>
-              </ion-item>
               <ion-row>
-                <ion-col>
-                  <ion-button expand="full" (click)="handleSendMessage()">Send</ion-button>
-                </ion-col>
+                  <ion-col size="10">
+                      <ion-item>
+                          <ion-textarea [(ngModel)]="message.txtContent"></ion-textarea>
+                      </ion-item>
+                  </ion-col>
+                  <ion-col size="2">
+                      <ion-button expand="full" (click)="handleSendMessage()">Send</ion-button>
+                  </ion-col>
               </ion-row>
             </ion-content>
-            
           </div>
         </div>
       </ion-col>

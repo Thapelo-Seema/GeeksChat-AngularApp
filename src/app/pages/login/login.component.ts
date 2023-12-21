@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
       if(loginResponse.status == "SUCCESS"){
          this.chatUser = loginResponse.data  || new ChatUser();
          this.eventService.emitLoginEvent(this.chatUser)
-      this.router.navigate(['/contacts', this.chatUser.id]);
+      this.router.navigate(['/contacts', this.chatUser.id], {queryParams: this.chatUser});
       }else{
         console.log(loginResponse)
         alert(loginResponse.message)

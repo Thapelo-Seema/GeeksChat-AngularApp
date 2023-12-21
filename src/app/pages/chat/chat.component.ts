@@ -24,10 +24,37 @@ export class ChatComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.activatedRoute.params.pipe(take(1))
-    .subscribe(params =>{
-      this.currentUser.id = params["userId"];
-      this.contact.id = params["contactId"];
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(data =>{
+      console.log(data)
+      this.initializeUsers();
+      this.initializeMessages();
+      this.registerOnNewMessageHandler();
+    })
+  }
+
+  initializeUsers():void{
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(data =>{
+      this.currentUser.id = data["currentUserId"];
+      this.currentUser.firstName = data["currentUserName"];
+      this.contact.id = data["contactId"];
+      this.contact.firstName = data["contactName"];
+    })
+  }
+
+  registerOnNewMessageHandler():void{
+    this.eventService.messageEvent.subscribe(msg =>{
+      if(msg.sender != this.currentUser.id)
+        this.messages.push(msg);
+    })
+  }
+
+
+  initializeMessages(){
+    this.activatedRoute.queryParams.pipe(take(1)).subscribe(data =>{
+      let initialMessages: ChatMessage[]  = data["messages"];
+      initialMessages?.forEach((msg:ChatMessage) =>{
+        this.messages.push(msg);
+      })
     })
   }
 
@@ -41,7 +68,7 @@ export class ChatComponent implements OnInit{
     tempMessage.topic = this.message.topic;
     this.messages.push(tempMessage);
     this.webSocketSvc.sendMessage(tempMessage);
-    //this.message.txtContent = "";
+    this.message.txtContent = "";
   }
 
   registerUser(){
