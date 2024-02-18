@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { UserRegistrationRequest } from '../models/user-registration-request';
 import { RegisteUserResponse } from '../models/register-user-response';
 import { LoginResponse } from '../models/login-response';
+import { TestInterface } from '../models/test-interface';
 
 
 @Injectable({
@@ -20,5 +21,9 @@ export class AuthService {
 
   register(userRegReq: UserRegistrationRequest): Observable<RegisteUserResponse>{
       return this.http.post<RegisteUserResponse>(environment.restApiURL + "/register", userRegReq);
+  }
+
+  testing():Observable<TestInterface>{
+    return this.http.post<TestInterface>(environment.restApiURL, {})
   }
 }

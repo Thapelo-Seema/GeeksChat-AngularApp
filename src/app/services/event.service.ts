@@ -20,7 +20,7 @@ export class EventService {
     return this.messageEvent.emit(chatMessage);
   }
 
-  emitResubscribeEvent(message: any){
-    return this.reSubscribeEvent.emit(message);
+  emitResubscribeEvent(user: ChatUser){
+    return this.reSubscribeEvent.emit(user);
   }
 }

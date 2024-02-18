@@ -34,6 +34,7 @@ export class ContactsComponent implements OnInit{
 
   ngOnInit(): void {
     this.initializeCurrentUser();
+    this.eventService.emitResubscribeEvent(this.currentUser);
     this.userService.getChatUsers(this.currentUser.id).subscribe(users =>{
       this.contacts = users.filter(u => u.id != this.currentUser.id);
       this.initializeContactsMap();

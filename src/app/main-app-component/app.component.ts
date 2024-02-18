@@ -5,6 +5,7 @@ import { Message } from '@stomp/stompjs';
 import { EventService } from "../services/event.service";
 import { ChatUser } from '../models/chat-user';
 import { NavigationExtras, Router } from '@angular/router';
+import { CacheService } from '../services/cache.service';
 
 @Component({
   selector: 'app-root',
@@ -12,23 +13,33 @@ import { NavigationExtras, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
+  messageSubscriptions: number = 0;
   title = 'GeeksMiniProject';
   message: ChatMessage = new ChatMessage();
   chatMessageMap: Map<number, ChatMessage[]>  = new Map<number, ChatMessage[]>();
   currentUser: ChatUser = new ChatUser(0,"", "", "", "");
 
-  constructor(private webSocketSvc: WebsocketService, private eventService: EventService, private router: Router){
+  constructor(private webSocketSvc: WebsocketService, 
+              private eventService: EventService, private router: Router){
 
   }
 
   //Todo: clean up and find a way to resubscribe once subscription is lost
   ngOnInit(): void {
+   
     this.webSocketSvc.stompClient.activate();
-    this.eventService.reSubscribeEvent.subscribe(userId =>{
-      console.log("re-subscribe to: ", userId)
-      //this.webSocketSvc.stompClient.activate();
-      //.subscribeToPrivateMessages(userId);
+
+
+    this.eventService.reSubscribeEvent.subscribe(data =>{
+      setTimeout(() =>{
+        if(this.messageSubscriptions == 0 && this.webSocketSvc.stompClient.connected){
+          this.currentUser = data;
+          this.subscribeToPrivateMessages(this.currentUser.id);
+          console.log(data)
+        }
+      }, 3000)
     })
+
     this.eventService.loginEvent.subscribe((user) =>{
       this.currentUser = user;
       //run logic for listening to login service and subscribe to users web socket topics
@@ -36,6 +47,8 @@ export class AppComponent implements OnInit{
       const navExtras: NavigationExtras = {state: this.currentUser}
       this.router.navigate(['/contacts', this.currentUser.id], navExtras)
     })
+
+    
   }
 
   handleNewMessageEvents(message: Message){
@@ -45,8 +58,9 @@ export class AppComponent implements OnInit{
   }
 
   subscribeToPrivateMessages(userId: number){
+    this.messageSubscriptions++;
     //this is an endpoint for listening for private messages on the websocket connection already established
-    this.webSocketSvc.subscribeToTopic(`/user/${userId}/private`, (message: Message) =>{
+    this.webSocketSvc.subscribeToTopic(`/users/${userId}/private`, (message: Message) =>{
       //Handle new message event
       this.handleNewMessageEvents(message);
     });

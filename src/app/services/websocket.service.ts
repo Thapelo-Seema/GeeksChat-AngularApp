@@ -13,8 +13,13 @@ export class WebsocketService {
   webSocket: WebSocket;
  
   constructor() { 
-    this.webSocket =  new WebSocket(environment.websocketURL)
+    this.webSocket =  new WebSocket(environment.websocketURL);
     this.stompClient = Stomp.over(this.webSocket);
+    //this.stompClient.webSocketFactory = function() { return new WebSocket("")}
+  }
+
+  webSocketFactory(){
+    return Stomp.over(this.webSocket);
   }
 
   public sendMessage(message: ChatMessage){

@@ -27,6 +27,7 @@ export class ChatComponent implements OnInit{
     this.activatedRoute.queryParams.pipe(take(1)).subscribe(data =>{
       console.log(data)
       this.initializeUsers();
+      this.eventService.emitResubscribeEvent(this.currentUser);
       this.initializeMessages();
       this.registerOnNewMessageHandler();
     })
